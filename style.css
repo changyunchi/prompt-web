@@ -29,6 +29,7 @@ body {
 }
 
 .editor-area {
+    /* 這裡做了修改，從 row 改為 column */
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -59,10 +60,4 @@ iframe#output-frame {
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #fff;
-}
-
-@media (min-width: 768px) {
-    .editor-area {
-        flex-direction: row;
-    }
 }
