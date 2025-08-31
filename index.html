@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的文字筆記本</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="text-block">
+        <h2>區塊一</h2>
+        <p contenteditable="true">請在此輸入你的文字，這個區塊可以自由編輯...</p>
+    </div>
+
+    <div class="text-block">
+        <h2>區塊二</h2>
+        <p contenteditable="true">請在此輸入你的文字...</p>
+    </div>
+
+    <div class="text-block">
+        <h2>區塊三</h2>
+        <p contenteditable="true">請在此輸入你的文字...</p>
+    </div>
+
+    <div class="text-block">
+        <h2>區塊四</h2>
+        <p contenteditable="true">請在此輸入你的文字...</p>
+    </div>
+
+    <div class="renderer-container">
+        <h2>即時預覽區</h2>
+        <div class="editor-area">
+            <div class="input-pane">
+                <h3>輸入區</h3>
+                <textarea id="code-input" placeholder="在這裡輸入 HTML, Markdown, 或 CSS..."></textarea>
+            </div>
+            <div class="output-pane">
+                <h3>渲染區</h3>
+                <iframe id="output-frame" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>
