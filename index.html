@@ -3,47 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的文字筆記本</title>
+    <title>AI 作文批改指令</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <h1 class="main-title" contenteditable="true" onclick="this.select()">AI 作文批改指令</h1>
 
-    <div class="text-block">
-        <h2>區塊一</h2>
-        <p contenteditable="true">請在此輸入你的文字，這個區塊可以自由編輯...</p>
-    </div>
-
-    <div class="text-block">
-        <h2>區塊二</h2>
-        <p contenteditable="true">請在此輸入你的文字...</p>
-    </div>
-
-    <div class="text-block">
-        <h2>區塊三</h2>
-        <p contenteditable="true">請在此輸入你的文字...</p>
-    </div>
-
-    <div class="text-block">
-        <h2>區塊四</h2>
-        <p contenteditable="true">請在此輸入你的文字...</p>
-    </div>
-
-    <div class="renderer-container">
-        <h2>即時預覽區</h2>
-        <div class="editor-area">
-            <div class="input-pane">
-                <h3>輸入區</h3>
-                <textarea id="code-input" placeholder="在這裡輸入 HTML, Markdown, 或 CSS..."></textarea>
+    <div class="apple-frame">
+        <div class="toggle-icon active" id="toggleIcon">
+            <div class="sun-container">
+                <div class="sun-glow-outer"></div>
+                <div class="sun-glow"></div>
+                <div class="sun icon"></div>
             </div>
-            <div class="output-pane">
-                <h3>渲染區</h3>
-                <iframe id="output-frame" frameborder="0"></iframe>
+            <div class="moon icon">
+                <div class="dark-moon"></div>
+                <div class="crescent"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
             </div>
         </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="script.js"></script>
 
+    <div class="a4-container">
+        <div class="content-container">
+            
+            <!-- 區塊1 -->
+            <div class="glass-block">
+                <h3>1. 使用 AI 將手寫作文拍成照片，指令(prompt)如下:</h3>
+                <p>提示詞1️⃣</p>
+                <pre><code>&nbsp;請將以下英文作文圖片轉成文字檔，保持原文內容、標點和錯字，不做任何修改。<br>【匯入圖片】</code></pre>
+                <button class="copy-btn" onclick="copyCode(this)">點我複製</button>
+                <div class="copy-message"></div>
+            </div>
+
+            <!-- 區塊2 -->
+            <div class="glass-block">
+                <h3>2. 使用 ChatGPT 評分，指令(prompt)如下:</h3>
+                <p>提示詞 2️⃣</p>
+                <pre><code>&nbsp;This is a writing exercise. <br>&nbsp;The writing prompt is as follows in Chinese.  
+&nbsp;Writing prompt: 
+&nbsp;智慧型手機在現代生活扮演很重要的地位，也對高中生帶來很多影響，其中手機成癮也越來<br>&nbsp;越普遍。請寫一篇短文說明你的看法。文分兩段，第一段依據你的觀察說明高中生手機成癮<br>&nbsp;現象的成因，第二段就上述現象，你覺得應該採取哪些作為已解決其問題。
+&nbsp;Please grade the paragraph based on the following scoring criteria: 
+&nbsp;A. Content, 5 points
+&nbsp;B. Organization, 5 points
+&nbsp;C. Grammar and sentence structure, 5 points
+&nbsp;D. Vocabulary and spelling, 5 points
+【請在下方貼上作文】
+</code></pre>
+                <button class="copy-btn" onclick="copyCode(this)">點我複製</button>
+                <div class="copy-message"></div>
+            </div>
+            
+            <!-- 區塊3 -->
+            <div class="glass-block">
+                <h3>3. 請 ChatGPT 幫你修改文法錯誤，指令 (prompt) 如下:</h3>
+                <p>提示詞 3️⃣</p>
+                <pre><code>Correct grammatical errors and typos in the following passage.<br>Do not make other changes.
+請按以下要求執行：
+1. 找出文章中的文法錯誤（拼字、文法、用詞、搭配等），但不修改作者意思。
+2. 輸出全文，並使用螢光標記。
+3. 紅色螢光筆標錯誤字詞，綠色螢光筆標正確字詞，兩者之間加箭頭「→」。
+4. 使用程式碼區塊 (code block) 輸出結果。
+5. 使用 HTML 語法：錯誤字→正確字
+6. 保持文章原本段落結構不變。
+7. 每段文章首行縮排四個空格（可用 CSS `text-indent:2em;` 或空格）。
+8. AI 回覆語言設定為繁體中文（預設）。
+9. 不額外添加評論或說明。
+10. 除了這篇文章用 code block 呈現，後續問題以一般回覆。
+11. 文章共兩段，除非原文分段，否則每句不換行。
+12. HTML 可在瀏覽器直接渲染紅綠螢光筆效果。
+✅ 文章/句子如下【請在下方貼上作文】：</code></pre>
+                <button class="copy-btn" onclick="copyCode(this)">點我複製</button>
+                <div class="copy-message"></div>
+            </div>
+            
+            <!-- 區塊4 -->
+            <div class="glass-block">
+                <h3>4. 請 ChatGPT 幫你改寫文章，指令 (prompt) 如下:</h3>
+                <p>提示詞 4️⃣</p>
+                <pre><code>Rewrite and polish the passage. Add transitional words to make it more organized and coherent. 
+#language level: CEFR B1
+#length: 150 words (可根據你目前寫的字數調整)</code></pre>
+<button class="copy-btn" onclick="copyCode(this)">點我複製</button>
+<div class="copy-message"></div>
+            </div>
+            
+            <!-- 區塊5 -->
+            <div class="paragraph-block">
+            <p>&nbsp;★ CEFR B1: 中級英文　CEFR B2: 中高級　CEFR C1: 高級
+<br>&nbsp;&nbsp;4. 請將步驟三：AI 幫你改完文法的部分抄一遍，交給老師評分。
+<br>&nbsp;&nbsp;5. 步驟四修改過的作文可以自己抄一遍，學習、模仿 AI 改的句子！</p>
+</div>
+
+        
+        <div class="render-section">
+             <div class="render-area" id="renderArea">
+                <h3>渲染預覽區</h3>
+                <p>在此處顯示輸入的內容。支援 HTML、CSS 和 Markdown 語法。</p>
+            </div>
+            
+            <div class="input-area">
+                <h3>輸入區</h3>
+                <textarea id="inputText" placeholder="請輸入 HTML、CSS 或 Markdown 內容..." oninput="renderContent()"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
