@@ -1,63 +1,651 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     line-height: 1.6;
-    margin: 0;
-    padding: 20px;
-    background-color: #f4f4f4;
+    background: #f8f8f8; /* 初始為白色背景 */
     color: #333;
+    min-height: 100vh;
+    transition: background 0.8s ease;
+    overflow-x: hidden;
+    padding: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.text-block {
-    background: #fff;
-    padding: 20px;
+body.dark-mode {
+    background: #2c2c2e; /* 黑色背景 */
+    color: #fff;
+}
+
+/* 主標題 */
+.main-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 20px 0 30px;
+    text-align: center;
+    background: linear-gradient(45deg, #3498db, #9b59b6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: all 0.5s ease;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.main-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(45deg, #3498db, #9b59b6);
+    border-radius: 2px;
+}
+
+body.dark-mode .main-title {
+    background: linear-gradient(45deg, #64B5F6, #BA68C8);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+body.dark-mode .main-title::after {
+    background: linear-gradient(45deg, #64B5F6, #BA68C8);
+}
+
+/* A4 格式容器 */
+.a4-container {
+    width: 210mm; /* A4 宽度 */
+    min-height: 290mm; /* A4 高度 */
+    padding: 10mm;
+    margin: 20px auto;
+    background: white;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.05); /* 淺色模式下的邊框 */
+    border-radius: 10px;
+}
+
+body.dark-mode .a4-container {
+    background: #3a3a3c;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 蘋果風格邊框 - 右上角 */
+.apple-frame {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 66px; /* 正方形 */
+    height: 66px; /* 正方形 */
+    border-radius: 16px; /* 統一圓角 */
+    background: linear-gradient(145deg, #2a2a3a, #1a1a2a); /* 初始為深色（與白色背景反色） */
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.3),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 4px 8px rgba(100, 100, 150, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    z-index: 1000;
+    transition: all 0.8s ease;
+}
+
+body.dark-mode .apple-frame {
+    background: linear-gradient(145deg, #f5f5f5, #e0e0e0); /* 白色背景時底座為深色（反色） */
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.2),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.1),
+        inset 0 4px 8px rgba(255, 255, 255, 0.6);
+}
+
+.apple-frame::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 16px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+    pointer-events: none;
+}
+
+body.dark-mode .apple-frame::after {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+/* 圖標容器 */
+.toggle-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.8s ease;
+}
+
+.toggle-icon .sun-container, .toggle-icon .moon {
+    transition: all 0.8s ease;
+    position: absolute;
+}
+
+/* 初始狀態：顯示太陽（白色背景） */
+.toggle-icon .sun-container {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+}
+
+.toggle-icon .moon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+}
+
+/* 切換狀態：顯示月亮（黑色背景） */
+.toggle-icon.active .sun-container {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+}
+
+.toggle-icon.active .moon {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+}
+
+/* 太陽圖標樣式 */
+.sun-container {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sun-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(255,215,0,0) 70%);
+    animation: sun-glowing 3s infinite alternate;
+    filter: blur(3px);
+}
+
+.sun-glow-outer {
+    position: absolute;
+    width: 140%;
+    height: 140%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, rgba(255,215,0,0) 60%);
+    animation: sun-glowing-outer 4s infinite alternate;
+    filter: blur(5px);
+}
+
+.sun.icon {
+    color: #FFD700;
+    position: relative;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 
+        0 0 0 1px rgba(255, 215, 0, 0.8),
+        0 0 8px rgba(255, 215, 0, 0.6),
+        0 0 16px rgba(255, 215, 0, 0.4),
+        -12px 0 0 -4px currentColor, 
+        12px 0 0 -4px currentColor, 
+        0 -12px 0 -4px currentColor, 
+        0 12px 0 -4px currentColor, 
+        -9px -9px 0 -4px currentColor, 
+        -9px 9px 0 -4px currentColor, 
+        9px -9px 0 -4px currentColor, 
+        9px 9px 0 -4px currentColor;
+    animation: sun-pulse 3s infinite alternate;
+    z-index: 2;
+}
+
+/* 月亮圖標樣式 */
+.moon.icon {
+    position: relative;
+    width: 40px;
+    height: 40px;
+}
+
+/* 暗月部分 */
+.moon.icon .dark-moon {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(60, 60, 100, 0.8);
+    box-shadow: 
+        0 0 8px rgba(0, 0, 0, 0.5),
+        inset 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 新月部分 */
+.moon.icon .crescent {
+    position: absolute;
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    background: #E4EDF8;
+    box-shadow: 
+        0 0 10px #FFFFFF,
+        inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+    top: 20%;
+    left: 10%;
+    animation: crescent-glow 4s infinite alternate;
+    transform: rotate(-15deg);
+}
+
+/* 星星效果 */
+.moon.icon .star {
+    position: absolute;
+    background: #FFFFFF;
+    border-radius: 50%;
+    box-shadow: 0 0 2px #FFFFFF;
+    animation: twinkle 3s infinite alternate;
+}
+
+.moon.icon .star:nth-child(3) {
+    width: 1px;
+    height: 1px;
+    top: 15%;
+    right: 20%;
+    animation-delay: 0.5s;
+}
+
+.moon.icon .star:nth-child(4) {
+    width: 1px;
+    height: 1px;
+    bottom: 25%;
+    right: 15%;
+    animation-delay: 1s;
+}
+
+.moon.icon .star:nth-child(5) {
+    width: 2px;
+    height: 2px;
+    top: 40%;
+    right: 5%;
+    animation-delay: 1.5s;
+}
+
+/* 內容區域 */
+.content-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+/* 霧面玻璃區塊 */
+.glass-block {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    min-height: 200px;
+    border: 1px solid rgba(0, 0, 0, 0.1); /* 淺色模式下的邊框 */
+}
+.paragraph-block {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    min-height: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.1); /* 淺色模式下的邊框 */
+}
+
+body.dark-mode .glass-block {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-block:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.glass-block h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #3498db;
+}
+
+body.dark-mode .glass-block h3 {
+    color: #64B5F6;
+}
+
+.glass-block p {
+    line-height: 1.6;
     margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.glass-block pre {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 15px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow-x: auto;
+    margin-bottom: 40px; /* 為複製按鈕留出空間 */
+    font-size: 0.85rem;
+    position: relative;
 }
 
-.text-block p {
-    margin: 0;
-    cursor: text;
+body.dark-mode .glass-block pre {
+    background: rgba(255, 255, 255, 0.1);
 }
 
-.renderer-container {
-    margin-top: 30px;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.glass-block code {
+    font-family: 'Courier New', monospace;
+    display: block;
+    white-space: pre-wrap;
+    overflow-x: auto;
 }
 
-.editor-area {
-    /* 這裡做了修改，從 row 改為 column */
+/* 自定義滾動條 */
+.glass-block pre::-webkit-scrollbar {
+    height: 8px;
+}
+
+.glass-block pre::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.glass-block pre::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.glass-block pre::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .glass-block pre::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .glass-block pre::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+body.dark-mode .glass-block pre::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* 液態玻璃複製按鈕 - 放在左下角 */
+.copy-btn {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    background: linear-gradient(45deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4));
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    color: #333;
+    font-weight: 600;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    font-size: 0.9rem;
+}
+
+body.dark-mode .copy-btn {
+    background: linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+    color: #fff;
+}
+
+.copy-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.2),
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.2)
+    );
+    transform: rotate(45deg);
+    transition: all 0.5s ease;
+}
+
+.copy-btn:hover::before {
+    transform: rotate(45deg) translate(20%, 20%);
+}
+
+.copy-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.copy-btn:active {
+    transform: translateY(1px);
+}
+
+.copy-message {
+    position: absolute;
+    left: 20px;
+    bottom: 55px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.copy-success {
+    color: #2ecc71;
+}
+
+.copy-error {
+    color: #e74c3c;
+}
+
+/* 渲染區域 */
+.render-section {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.input-pane, .output-pane {
-    flex: 1;
-    min-width: 300px;
+.render-area {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 25px;
+    min-height: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    overflow: auto;
+    border: 1px solid rgba(0, 0, 0, 0.1); /* 淺色模式下的邊框 */
 }
 
-.renderer-container h3 {
-    margin-top: 0;
+body.dark-mode .render-area {
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-textarea#code-input {
+.input-area {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(0, 0, 0, 0.1); /* 淺色模式下的邊框 */
+}
+
+body.dark-mode .input-area {
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.input-area textarea {
     width: 100%;
-    height: 300px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    min-height: 120px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    color: inherit;
+    font-family: inherit;
     resize: vertical;
-    font-family: monospace;
 }
 
-iframe#output-frame {
-    width: 100%;
-    height: 300px;
-    border: 1px solid #ccc;
+body.dark-mode .input-area textarea {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 自定義textarea滾動條 */
+.input-area textarea::-webkit-scrollbar {
+    width: 8px;
+}
+
+.input-area textarea::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
     border-radius: 4px;
-    background-color: #fff;
+}
+
+.input-area textarea::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.input-area textarea::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .input-area textarea::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .input-area textarea::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+body.dark-mode .input-area textarea::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* 動畫效果 */
+@keyframes sun-pulse {
+    0% {
+        box-shadow: 
+            0 0 0 1px rgba(255, 215, 0, 0.8),
+            0 0 8px rgba(255, 215, 0, 0.6),
+            0 0 16px rgba(255, 215, 0, 0.4),
+            -12px 0 0 -4px #FFD700, 
+            12px 0 0 -4px #FFD700, 
+            0 -12px 0 -4px #FFD700, 
+            0 12px 0 -4px #FFD700, 
+            -9px -9px 0 -4px #FFD700, 
+            -9px 9px 0 -4px #FFD700, 
+            9px -9px 0 -4px #FFD700, 
+            9px 9px 0 -4px #FFD700;
+    }
+    100% {
+        box-shadow: 
+            0 0 0 2px rgba(255, 215, 0, 0.9),
+            0 0 12px rgba(255, 215, 0, 0.8),
+            0 0 24px rgba(255, 215, 0, 0.6),
+            -12px 0 0 -3px #FFAA00, 
+            12px 0 0 -3px #FFAA00, 
+            0 -12px 0 -3px #FFAA00, 
+            0 12px 0 -3px #FFAA00, 
+            -9px -9px 0 -3px #FFAA00, 
+            -9px 9px 0 -3px #FFAA00, 
+            9px -9px 0 -3px #FFAA00, 
+            9px 9px 0 -3px #FFAA00;
+    }
+}
+
+@keyframes sun-glowing {
+    0% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+@keyframes sun-glowing-outer {
+    0% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.5;
+        transform: scale(1.2);
+    }
+}
+
+@keyframes crescent-glow {
+    0% {
+        box-shadow: 
+            0 0 8px #FFFFFF,
+            inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+    }
+    100% {
+        box-shadow: 
+            0 0 14px #FFFFFF,
+            inset -2px -2px 6px rgba(255, 255, 255, 0.7);
+    }
+}
+
+@keyframes twinkle {
+    0% {
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+@media print {
+    .apple-frame, .instructions, .main-title {
+        display: none;
+    }
+    
+    .a4-container {
+        box-shadow: none;
+        width: 100%;
+        height: auto;
+    }
 }
